@@ -1,5 +1,4 @@
-#
-# Copyright (C) 2013 The Android Open-Source Project
+# Copyright (C) 2012 The CyanogenMod Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,22 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#
 
-RIL_PATH := $(call my-dir)
+LOCAL_PATH:= $(call my-dir)
+# HAL module implemenation, not prelinked and stored in
+# hw/<COPYPIX_HARDWARE_MODULE_ID>.<ro.board.platform>.so
+include $(CLEAR_VARS)
 
-ifeq ($(BOARD_VENDOR),samsung)
+LOCAL_SRC_FILES := lights.c
 
-# libril
-ifeq ($(BOARD_PROVIDES_LIBRIL),true)
-ifneq ($(filter m7450 mdm9x35 ss333 tss310 xmm6260 xmm6262 xmm6360 xmm7260,$(BOARD_MODEM_TYPE)),)
-include $(RIL_PATH)/libril/Android.mk
-endif
-endif
+LOCAL_PRELINK_MODULE := false
+LOCAL_MODULE_PATH := $(TARGET_OUT_SHARED_LIBRARIES)/hw
 
-# ril client
-SECRIL_CLIENT_DIRS := libsecril-client libsecril-client-sap
-include $(foreach client_dirs,$(SECRIL_CLIENT_DIRS),$(RIL_PATH)/$(client_dirs)/Android.mk)
+LOCAL_SHARED_LIBRARIES := liblog
 
-endif
+LOCAL_MODULE := lights.$(TARGET_BOARD_PLATFORM)
 
+LOCAL_MODULE_TAGS := optional
+
+include $(BUILD_SHARED_LIBRARY)
